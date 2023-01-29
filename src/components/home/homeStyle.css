@@ -1,0 +1,50 @@
+
+
+@import url("https://fonts.cdnfonts.com/css/iranyekan");
+@import url('https://v1.fontapi.ir/css/Yekan');
+.header{
+
+    background:-moz-linear-gradient(90deg, rgba(170, 37, 8, 1) 13%, rgba(4, 165, 200, 1) 100%); 
+
+    /* safari 5.1+,chrome 10+ */
+    background:-webkit-linear-gradient(90deg, rgba(170, 37, 8, 1) 13%, rgba(4, 165, 200, 1) 100%);
+
+    /* opera 11.10+ */
+    background:-o-linear-gradient(90deg, rgba(170, 37, 8, 1) 13%, rgba(4, 165, 200, 1) 100%);
+
+    /* ie 6-9 */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#04A5C8', endColorstr='#AA2508', GradientType=0 );
+
+    /* ie 10+ */
+    background:-ms-linear-gradient(90deg, rgba(170, 37, 8, 1) 13%, rgba(4, 165, 200, 1) 100%);
+
+    /* global 94%+ browsers support */
+    background:linear-gradient(90deg, rgba(170, 37, 8, 1) 13%, rgba(4, 165, 200, 1) 100%);
+  -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+
+.headerDark{
+      /* ff 3.6+ */
+      background:-moz-linear-gradient(90deg, rgba(169, 89, 255, 1) 0%, rgba(238, 130, 238, 1) 100%); 
+
+      /* safari 5.1+,chrome 10+ */
+      background:-webkit-linear-gradient(90deg, rgba(169, 89, 255, 1) 0%, rgba(238, 130, 238, 1) 100%);
+  
+      /* opera 11.10+ */
+      background:-o-linear-gradient(90deg, rgba(169, 89, 255, 1) 0%, rgba(238, 130, 238, 1) 100%);
+  
+      /* ie 6-9 */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EE82EE', endColorstr='#A959FF', GradientType=0 );
+  
+      /* ie 10+ */
+      background:-ms-linear-gradient(90deg, rgba(169, 89, 255, 1) 0%, rgba(238, 130, 238, 1) 100%);
+  
+      /* global 94%+ browsers support */
+      background:linear-gradient(90deg, rgba(169, 89, 255, 1) 0%, rgba(238, 130, 238, 1) 100%);
+
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
