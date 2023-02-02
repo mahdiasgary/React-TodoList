@@ -25,28 +25,60 @@ cancel:"cancel",
 tname:"Task name",
 dis:"Description",
 inbox:"Inbox",
-uncom : "unCompleted",
+uncom : "UnCompleted",
 new:"newest",
 old:"oldest",
-todoList : "Todo List"
+todoList : "Todo List",
+edit : "Edit",
+search : "Search todo ...",
+todohome1 : " Now , you can organize your life by adding daily tasks.",
+email:"Email",
+pass :"Password",
+Eerore1:"email is requried",
+Eerore2:"include an @ email address",
+Perore1:"No password provided",
+Perore2:'Password is too short - should be 8 chars minimum',
+Perore3:"Must Contain 8 Characters, One Uppercase, One Lowercase, One Number",
+login2:"LOGIN",
+newC :"Create a new account",
+forget:'Forgot Password?',
+or:"or",
+toa1:"your Login is succses ",
+Ename:"name & lastName is required",
+Ephone1:'phone nummber is required',
+Ephone2:"phone number should be 11 numbers",
+Epc:'Please retype your password.',
+Epc2:"Your passwords do not match.",
+singup2:"SING UP",
+NameLastName:'Name & LastName',
+phone:"Phone number",
+pc:"Password Confirmation",
+toa2:"your singUp is succses",
+theme:"Theme",
+uncom2:"You have no Uncompleted Todos",
+notoday:"You have no Todos today",
+logout:"Log out",
+user:'User',
+noR:"No results found"
+
 };
 const traFr = { 
   singup: "ثبت نام",
    login: "ورود" ,
    header1a: "بالاخره کارت و زندگیتو",
    header1b: "سازماندهی کن",
-   header2:"اگه شاغلی یا دانشجویی یا حتی دانش ۀموزی تویی که گذر زمان برات مهمه  این سایت مناسب توعه کافیه ثبت نام کنی",
-   getStart:"ثبت نام",
+   header2:"اگه شاغلی یا دانشجویی یا حتی دانش آموزی تویی که گذر زمان برات مهمه  این سایت مناسب توعه کافیه ثبت نام کنی",
+   getStart:"همین الان شروع کن",
   
    header3a:"کاراتو اضافه کن . ",
 
    header3b:"کل زندگیتو سازماندهی کن ",
    header4:"لیست کارهای شما به طور خودکار به نمای امروز، آینده و فیلتر سفارشی مرتب می شود تا به شما کمک کند روی مهم ترین چیزهای خود تمرکز کنید.",
-   footer1:"Join milions of people who organize works and life with TodoList",
+   footer1:"به میلیون ها نفری بپیوندید که کار و زندگی خود را با TodoMan سازماندهی می کنند.",
 blog:"بلاگ",
 about:"درباره ما",
 today:"امروز",
-addt : "افزودن کار",
+addt : "افزودن ",
 sort:"بر اساس",
 add:"افزودن",
 cancel:"لغو",
@@ -56,17 +88,42 @@ inbox:"صندوق ورودی",
 uncom : "کامل نشده",
 new:"جدیدترین",
 old:"قدیمی ترین",
-todoList : "لیست کار ها"
+todoList : "لیست کار ها",
+edit : "ویرایش",
+search : "جستجو ...",
+todohome1 : "الان تو میتونی با اضافه کردن کارای روزمره زندگیتو سازماندهی کنی",
+email:"ایمیل",
+pass :"رمز عبور",
+Eerore1:"ایمیل را وارد کنید",
+Eerore2:"ایمیل باید شامل @ باشد",
+Perore1:"رمز عبور را وارد کنید",
+Perore2:'رمز عبور کوتاه است .باید حداقل شامل 8کاراکتر باشد',
+Perore3:"باید حداقل شامل یک حرف انگلیسی بزرگ و کوچک و یک عدد باشد",
+login2:"ورود",
+newC :"ساخت حساب جدید",
+forget:"فراموشی رمز عبور",
+or:"یا",
+toa1:"با موفقیت وارد شدید",
+Ename:"نام یا نام خانوادگی خود را وارد کنید",
+Ephone1:'شماره موبایل خود را وارد کنید',
+Ephone2:"شماره موبایل باید 11 رقمی باشد",
+Epc:'رمز عبور خود را تکرار کنید',
+Epc2:"رمز عبور تطابق ندارد",
+singup2:"ثبت نام",
+NameLastName:'نام و نام خانوادگی',
+phone:"شماره موبایل",
+pc:"تکرار رمز عبور",
+toa2:"ثبت نام شما با موفقیت انجام شد",
+theme:'تم',
+uncom2:"شما هیچ مورد تکمیل نشده ای ندارید",
+notoday:"شما امروز کار از پیش تعیین شده ای ندارید",
+logout:"خروج",
+user:'کاربر',
+noR:"نتیجه ای یافت نشد"
+
+
   };
 
-// const resources = {
-//    en: {
-//      translation: translationEN
-//    },
-//    de: {
-//      translation: translationDE
-//    }
-//  };
 
 i18n.use(initReactI18next).init({
   resources: {
