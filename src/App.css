@@ -1,12 +1,14 @@
 
-@import url("https://fonts.googleapis.com/css?family=Manrope");
-@import url("https://fonts.cdnfonts.com/css/iranyekan");
-
 /* --primaryColor:" #6d28d9"; */
+.fa{
+  font-family:"Vazir";
 
+}
+.en{
+  font-family:"Manrope";
+}
 
 .darkTheme{
-  font-family: "Manrope";
   background:-moz-linear-gradient(100deg, rgba(0, 40, 83, 1) 0%, rgba(0, 0, 0, 1) 100%); 
 
   /* safari 5.1+,chrome 10+ */
@@ -26,7 +28,6 @@
 }
 
 .lightTheme{
-  font-family: "Manrope";
   background:-moz-linear-gradient(88deg, rgba(255, 72, 32, 0.36) 0%, rgba(214, 230, 233, 1) 85%); 
 
     /* safari 5.1+,chrome 10+ */

@@ -1,9 +1,6 @@
 import {
   TfiFaceSad,
-  FiTrash2,
   BsPlusSquare,
-  BsCircle,
-  BsCheckCircle,
   BsCalendar2Event,
   BiMoon,
   BiSun,
@@ -18,17 +15,32 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import i18n from "../../i18next";
 import { Link, withRouter } from "react-router-dom";
-import { useTodo, useTodoDispatcher } from "../../context/TodoProvider";
+import { useTodoDispatcher } from "../../context/TodoProvider";
 
-const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
+const AddTodo = ({ history, theme, setTheme, changeLanguage }) => {
   const { t } = useTranslation();
   const [menu, setMenu] = useState(false);
+  const [todo, setTodo] = useState({ id: "", name: "", dis: "", com: false });
+  const dispatch = useTodoDispatcher();
   const [showUser, setShowUser] = useState(false);
   const [Is, setIs] = useState([]);
-  const [filtered, setFilter] = useState(null);
-  const [search, setSearch] = useState("");
-  const [showSearchItems, setshowSearchItems] = useState(false);
 
+  const changHandler = (e) => {
+    setTodo({ ...todo, [e.target.name]: e.target.value });
+  };
+
+  const Addtodo = () => {
+    const newTodo = { ...todo, id: Date.now() };
+    dispatch({ type: "ADD_TODO", payload: newTodo });
+    setTodo({ id: "", name: "", dis: "", com: false });
+  };
+
+  useEffect(() => {
+    const User = JSON.parse(localStorage.getItem("user"));
+    if (User) {
+      setIs(User);
+    }
+  }, []);
 
   const logOut = (e) => {
     localStorage.removeItem("user");
@@ -38,118 +50,9 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
     history.push("/");
   };
 
-  useEffect(() => {
-    const User = JSON.parse(localStorage.getItem("user"));
-    if (User) {
-      setIs(User);
-    }
-
-    // setshowSearchItems(false);
-  }, []);
-  const todos = useTodo();
-  const SearchHandler = () => {
-    const FilterP = todos.filter((todo) =>
-      todo.name.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilter(FilterP);
-    setshowSearchItems(true);
-  };
-  useEffect(() => {
-    if (search === "") {
-      setFilter(null);
-    }
-  }, [search]);
-
-  const dispatch = useTodoDispatcher();
-
-  const compeletHandler = (id) => {
-    dispatch({ type: "COMPELET_TODO", payload: id });
-  };
-  const removeHandler = (id) => {
-    dispatch({ type: "REMOVE_TODO", payload: id });
-  };
-
   return (
     <div className="dark:text-white pb-80">
-      <div
-        className={`${
-          (!showSearchItems || search === "" || filtered === null) && "hidden"
-        }`}
-      >
-        <div
-          onClick={(e) => {
-            e.preventDefault();
-            setshowSearchItems(false);
-          }}
-          className="z-30 absolute w-full h-full top-[72px] bg-slate-800 backdrop-blur-md bg-opacity-10  "
-        ></div>
-        <div className={`${!showSearchItems && "hidden"} absolute z-40`}>
-          <div className=" w-[320px] mx-8 y9:w-[400px] y9:mx-16 sm:w-[550px] md:mx-24 lg:w-[650px] lg:mx-32  absolute z-40 top-[72px] ">
-            {filtered && (
-              <div>
-                {filtered.length !== 0 ? (
-                  <div>
-                    {filtered.map((Todo) => (
-                      <div className="py-4 border-b dark:border-[#787f98] mx-1 ">
-                        <div className="flex justify-between ">
-                          <div className="flex">
-                            <div
-                              onClick={(e) => {
-                                e.preventDefault();
-                                compeletHandler(Todo.id);
-                              }}
-                              className={`mx-2 hover:text-[18px] duration-200 self-center cursor-pointer ${
-                                Todo.com && "text-gray-500"
-                              }`}
-                            >
-                              {Todo.com ? <BsCheckCircle /> : <BsCircle />}
-                            </div>
-                            <div
-                              className={`font-semibold ${
-                                Todo.com && "text-gray-500  line-through"
-                              }  cursor-pointer`}
-                            >
-                              {Todo.name}
-                            </div>
-                          </div>
-                          <div className="flex self-center text-[18px] h-4 ">
-                            <div className="fa text-sm mx-1 y9:mx-3 mt-2 self-center">
-                              {i18n.language === "fa" ? (
-                                <span>{Todo.dateFa}</span>
-                              ) : (
-                                <span>{Todo.dateEn}</span>
-                              )}
-                            </div>
-
-                            <div className="mx-1 y9:mx-3 text-red-500 hover:text-[20px] w-4 duration-200">
-                              <FiTrash2
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  removeHandler(Todo.id);
-                                }}
-                                className="hover:text-[20px] text-[18px] cursor-pointer duration-200"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className={`${Todo.com && "text-gray-500"}`}>
-                          {Todo.dis}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="pt-5 text-[22px] font-semibold">
-                    {t("noR")}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col ">
+      <div className="flex flex-col  ">
         <nav
           className="flex justify-between max-w-[1400px] mx-4 md:mx-7 lg:mx-10 pt-5 
         dark:text-white h-[73px] border-b border-[#787f98] sticky top-0"
@@ -180,23 +83,12 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
                 />
               )}
             </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                SearchHandler();
-              }}
-              className="flex  "
-            >
+            <div className="flex  ">
               <div>
                 <input
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    e.preventDefault();
-                  }}
                   type="text"
-                  value={search}
                   placeholder={t("search")}
-                  className=" y9:w-[300px] h-[32px] rounded-l-sm placeholder:pl-4 
+                  className="fa y9:w-[300px] h-[32px] rounded-l-sm placeholder:pl-4 
                 placeholder:text-sm
                 placeholder:text-slate-500
                 dark:bg-primaryColor
@@ -211,16 +103,11 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
                 />
               </div>
               <div className="flex justify-center">
-                <button
-                  className=" rounded-r-sm bg-oragneMain h-[32px] px-2 text-white"
-                  onClick={(e) => {
-                    SearchHandler();
-                  }}
-                >
+                <button className=" rounded-r-sm bg-oragneMain h-[32px] px-2 text-white">
                   <BiSearch />
                 </button>
               </div>
-            </form>
+            </div>
           </div>
           <div className="flex">
             <div className="flex">
@@ -252,7 +139,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
                 </div>
 
                 <div>
-                  <div className="fa mx-1  hidden  sm:flex  group transition-all duration-200 ease-in-out ">
+                  <div className="mx-1  hidden  sm:flex  group transition-all duration-200 ease-in-out ">
                     {i18n.language === "fa" ? (
                       <div
                         onClick={() => changeLanguage("en")}
@@ -264,7 +151,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
                     ) : (
                       <div
                         onClick={() => changeLanguage("fa")}
-                        className="flex text-[12px] font-semibold cursor-pointer p-1 bg-left-bottom bg-gradient-to-r from-slate-600 to-slate-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out"
+                        className="fa flex text-[12px] font-semibold cursor-pointer p-1 bg-left-bottom bg-gradient-to-r from-slate-600 to-slate-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out"
                       >
                         فا
                         <MdLanguage className="ml-1 text-[18px]" />
@@ -293,7 +180,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
         }}
         className={
           menu &&
-          `absolute z-10 bg-slate-50 w-full h-full backdrop-blur-md bg-opacity-5 duration-300`
+          `absolute z-10 bg-slate-50  w-full h-full backdrop-blur-md bg-opacity-5 duration-300`
         }
       ></div>
       <div
@@ -307,7 +194,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
             menu
               ? `w-52 flex flex-col duration-500 `
               : `lg:flex flex-col w-7 md:w-[40px] duration-500`
-          }  duration-500  ${
+          } duration-500  ${
             i18n.language === "en" ? `border-r` : `border-l`
           } border-[#787f98]
           y9:my-2 mx-2 md:mx-6
@@ -316,7 +203,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
           `}
         >
           <Link to={"/home/addTodo"}>
-            <div className="flex mb-2  cursor-pointer  hover:text-oragneMain ">
+            <div className="flex mb-2  cursor-pointer  text-oragneMain ">
               <div className="self-center text-[18px]">
                 <BsPlusSquare />
               </div>
@@ -429,87 +316,139 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
               </div>
             </div>
             <div
-              className={`fa mx-3  duration-500  ${
+              className={`mx-3  duration-500  ${
                 i18n.language === "en" ? `origin-left` : `origin-right`
               } ${!menu && `scale-0  text-[0px] my-5 `}`}
-              onClick={() => {
-                i18n.language === "en"
-                  ? changeLanguage("fa")
-                  : changeLanguage("en");
-              }}
             >
               {i18n.language === "fa" ? "En" : "فا"}
             </div>
           </div>
         </div>
       </div>
-      {/* lllll */}
+
       <div
-        className={
-          i18n.language === "en"
-            ? `ml-16 mr-4  y9:ml-20 y9:mr-10 lg:mx-72 xl:mx-80 mt-9 `
-            : `mx-16  y9:mx-20 mt-9`
-        }
+        className={` mx-12 y9:mx-20 sm:mx-28 md:mx-44 lg:mx-60 xl:mx-56 mt-9 `}
       >
-        <div className="flex flex-col">
-          <div
-            className={`${theme === "lightTheme" ? "header" : "headerDark"}`}
-          >
-            <h1 className="text-[33px] y9:text-[42px] sm:text-[48px] font-extrabold">
-              {t("todohome1")}{" "}
-            </h1>
-          </div>
+        <div className="flex flex-col ">
           <div>
             <div>
-              <Link to={"/home/today"}>
-                <button className="bg-oragneMain  px-3 py-2  sm:px-7 sm:py-4 text-[20px] sm:text-[22px]  rounded-md mt-7 text-white">
-                  <BsPlusSquare className="inline mx-1 mb-1" />
-                  {t("addt")}
-                </button>
-              </Link>
+              <div className="flex dark:text-white">
+                <h1 className="font-semibold text-[22px]">{t("addt")} </h1>
+              </div>
+            </div>
+
+            <div>
+              <div>
+                <div>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      Addtodo();
+                    }}
+                    className="flex flex-col mt-3 max-w-[740px] rounded-md"
+                  >
+                    <div className="  dark:bg-primaryColor h-[100px] border dark:border-0 rounded-md border-[#787f98]">
+                      <div>
+                        <input
+                          name="name"
+                          value={todo.name}
+                          onChange={changHandler}
+                          type="text"
+                          placeholder={t("tname")}
+                          className="fa w-full bg-transparent dark:bg-primaryColor mt-2 placeholder:text-[#787f98]
+                         outline-none px-4
+                        "
+                        />{" "}
+                      </div>
+                      <div>
+                        <input
+                          name="dis"
+                          value={todo.dis}
+                          onChange={changHandler}
+                          type="text"
+                          placeholder={t("dis")}
+                          className="fa bg-transparent dark:bg-primaryColor mt-2 placeholder:text-[#787f98]
+                        px-4 outline-none w-full 
+                        "
+                        />{" "}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end mt-2 ">
+                      <div className="mx-3">
+                        <button
+                          disabled={
+                            todo.name === ""
+                              ? true
+                              : todo.dis === ""
+                              ? true
+                              : false
+                          }
+                          className={`
+                        
+                        px-7 py-[5px] hover:py-[8px] hover:px-9 hover:text-[18px]
+                        hover:rounded-md duration-300 rounded-sm bg-oragneMain text-white
+                        ${
+                          todo.name === "" &&
+                          "bg-slate-600 opacity-75 hover:py-[5px] hover:px-7 hover:text-[16px] "
+                        }
+                        ${
+                          todo.dis === "" &&
+                          "bg-slate-600 opacity-75 hover:py-[5px] hover:px-7 hover:text-[16px]"
+                        }
+                        `}
+                        >
+                          {t("add")}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div
-          onClick={(e) => {
-            e.preventDefault();
-            setShowUser(false);
-          }}
-          className={
-            showUser &&
-            `absolute z-10 bg-slate-50  w-full h-full  bg-opacity-5 duration-300 top-[73px]`
-          }
-        ></div>
+      </div>
 
-        <div>
-          <div
-            className={`${Is.length === 0 && " hidden"} absolute z-20 ${
-              i18n.language === "fa" ? "left-0" : "right-0"
-            } top-16 mx-3  ${!showUser && "scale-x-0 origin-left"} ${
-              i18n.language === "fa" ? "origin-left" : "origin-right"
-            } duration-300`}
-          >
-            <div className="px-5 border border-oragneMain rounded-md backdrop-blur-sm">
-              <div>
-                <h1 className="font-semibold text-oragneMain">{t("user")}:</h1>
-              </div>
-              <div className="my-1 font-semibold ">
-                <span> {Is.name && Is.name}</span>
-              </div>
-              <div className="my-1 font-semibold ">
-                <span> {Is.email && Is.email}</span>
-              </div>
-              <div className="text-[#717374] font-semibold">
-                <span>{Is.phone && Is.phone}</span>
-              </div>
-              <div className="my-1 mt-5  flex justify-center text-sm ">
-                <button
-                  onClick={(e) => logOut(e)}
-                  className="text-oragneMain border border-oragneMain hover:bg-oragneMain hover:rounded-md hover:text-white duration-300 font-semibold px-2 rounded-sm"
-                >
-                  {t("logout")}
-                </button>
-              </div>
+      <div
+        onClick={(e) => {
+          e.preventDefault();
+          setShowUser(false);
+        }}
+        className={
+          showUser &&
+          `absolute z-10  top-[73px] bg-slate-50  w-full h-full  bg-opacity-5 duration-300`
+        }
+      ></div>
+
+      <div>
+        <div
+          className={`${Is.length === 0 && " hidden"} absolute z-20 ${
+            i18n.language === "fa" ? "left-0" : "right-0"
+          } top-16 mx-3  ${!showUser && "scale-x-0 origin-left"} ${
+            i18n.language === "fa" ? "origin-left" : "origin-right"
+          } duration-300`}
+        >
+          <div className="px-5 border border-oragneMain rounded-md backdrop-blur-sm">
+            <div>
+              <h1 className="font-semibold text-oragneMain">{t("user")}:</h1>
+            </div>
+            <div className="my-1 font-semibold ">
+              <span> {Is.name && Is.name}</span>
+            </div>
+            <div className="my-1 font-semibold ">
+              <span> {Is.email && Is.email}</span>
+            </div>
+            <div className="text-[#717374] font-semibold">
+              <span>{Is.phone && Is.phone}</span>
+            </div>
+            <div className="my-1 mt-5  flex justify-center text-sm ">
+              <button
+                onClick={(e) => logOut(e)}
+                className="text-oragneMain border border-oragneMain hover:bg-oragneMain hover:rounded-md hover:text-white duration-300 font-semibold px-2 rounded-sm"
+              >
+                {t("logout")}
+              </button>
             </div>
           </div>
         </div>
@@ -518,4 +457,5 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
   );
 };
 
-export default withRouter(TodoHome);
+export default withRouter(AddTodo);
+// dark:border-[#787f98]

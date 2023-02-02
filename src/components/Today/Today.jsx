@@ -1,5 +1,6 @@
 import {
   TfiFaceSad,
+  FiEdit,
   FiTrash2,
   BsPlusSquare,
   BsCircle,
@@ -20,15 +21,55 @@ import i18n from "../../i18next";
 import { Link, withRouter } from "react-router-dom";
 import { useTodo, useTodoDispatcher } from "../../context/TodoProvider";
 
-const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
+const Today = ({ history, theme, setTheme, changeLanguage }) => {
   const { t } = useTranslation();
   const [menu, setMenu] = useState(false);
+  const [addTodo, setAddtodo] = useState(false);
+  const [todo, setTodo] = useState({
+    id: "",
+    name: "",
+    dis: "",
+    com: false,
+    edit: false,
+  });
+  const [editTodo, setEditTodo] = useState({ id: "", name: "", dis: "" });
   const [showUser, setShowUser] = useState(false);
   const [Is, setIs] = useState([]);
-  const [filtered, setFilter] = useState(null);
-  const [search, setSearch] = useState("");
-  const [showSearchItems, setshowSearchItems] = useState(false);
+  const dispatch = useTodoDispatcher();
+  const todos = useTodo();
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
 
+  const changHandler = (e) => {
+    setTodo({ ...todo, [e.target.name]: e.target.value });
+  };
+  const EditchangHandler = (e) => {
+    setEditTodo({ ...editTodo, [e.target.name]: e.target.value });
+  };
+
+  const Addtodo = () => {
+    const newTodo = { ...todo, id: Date.now() };
+    dispatch({ type: "ADD_TODO", payload: newTodo });
+    setTodo({ id: "", name: "", dis: "", com: false, edit: false });
+  };
+  const EditHandler = () => {
+    const newTodo = { ...editTodo };
+    dispatch({ type: "EDIT_TODO", payload: newTodo });
+    setEditTodo({ id: "", name: "", dis: "" });
+  };
+  const compeletHandler = (id) => {
+    dispatch({ type: "COMPELET_TODO", payload: id });
+  };
+  const showEditHand = (id) => {
+    dispatch({ type: "SHOW_EDIT", payload: id });
+  };
+  const removeHandler = (id) => {
+    dispatch({ type: "REMOVE_TODO", payload: id });
+  };
 
   const logOut = (e) => {
     localStorage.removeItem("user");
@@ -43,10 +84,11 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
     if (User) {
       setIs(User);
     }
-
-    // setshowSearchItems(false);
   }, []);
-  const todos = useTodo();
+  const [filtered, setFilter] = useState(null);
+
+  const [search, setSearch] = useState("");
+  const [showSearchItems, setshowSearchItems] = useState(false);
   const SearchHandler = () => {
     const FilterP = todos.filter((todo) =>
       todo.name.toLowerCase().includes(search.toLowerCase())
@@ -59,15 +101,6 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
       setFilter(null);
     }
   }, [search]);
-
-  const dispatch = useTodoDispatcher();
-
-  const compeletHandler = (id) => {
-    dispatch({ type: "COMPELET_TODO", payload: id });
-  };
-  const removeHandler = (id) => {
-    dispatch({ type: "REMOVE_TODO", payload: id });
-  };
 
   return (
     <div className="dark:text-white pb-80">
@@ -211,12 +244,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
                 />
               </div>
               <div className="flex justify-center">
-                <button
-                  className=" rounded-r-sm bg-oragneMain h-[32px] px-2 text-white"
-                  onClick={(e) => {
-                    SearchHandler();
-                  }}
-                >
+                <button className=" rounded-r-sm bg-oragneMain h-[32px] px-2 text-white">
                   <BiSearch />
                 </button>
               </div>
@@ -252,7 +280,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
                 </div>
 
                 <div>
-                  <div className="fa mx-1  hidden  sm:flex  group transition-all duration-200 ease-in-out ">
+                  <div className="mx-1  hidden  sm:flex  group transition-all duration-200 ease-in-out ">
                     {i18n.language === "fa" ? (
                       <div
                         onClick={() => changeLanguage("en")}
@@ -264,7 +292,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
                     ) : (
                       <div
                         onClick={() => changeLanguage("fa")}
-                        className="flex text-[12px] font-semibold cursor-pointer p-1 bg-left-bottom bg-gradient-to-r from-slate-600 to-slate-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out"
+                        className="fa flex text-[12px] font-semibold cursor-pointer p-1 bg-left-bottom bg-gradient-to-r from-slate-600 to-slate-500 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out"
                       >
                         فا
                         <MdLanguage className="ml-1 text-[18px]" />
@@ -330,7 +358,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
             </div>
           </Link>
           <Link to={"/home/today"}>
-            <div className="flex my-2 cursor-pointer  hover:text-oragneMain ">
+            <div className="flex my-2 cursor-pointer  text-oragneMain ">
               <div className="self-center text-[18px]">
                 <BsCalendar2Event />
               </div>
@@ -429,7 +457,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
               </div>
             </div>
             <div
-              className={`fa mx-3  duration-500  ${
+              className={`mx-3  duration-500  ${
                 i18n.language === "en" ? `origin-left` : `origin-right`
               } ${!menu && `scale-0  text-[0px] my-5 `}`}
               onClick={() => {
@@ -443,30 +471,270 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
           </div>
         </div>
       </div>
-      {/* lllll */}
-      <div
-        className={
-          i18n.language === "en"
-            ? `ml-16 mr-4  y9:ml-20 y9:mr-10 lg:mx-72 xl:mx-80 mt-9 `
-            : `mx-16  y9:mx-20 mt-9`
-        }
-      >
-        <div className="flex flex-col">
-          <div
-            className={`${theme === "lightTheme" ? "header" : "headerDark"}`}
-          >
-            <h1 className="text-[33px] y9:text-[42px] sm:text-[48px] font-extrabold">
-              {t("todohome1")}{" "}
-            </h1>
-          </div>
-          <div>
-            <div>
-              <Link to={"/home/today"}>
-                <button className="bg-oragneMain  px-3 py-2  sm:px-7 sm:py-4 text-[20px] sm:text-[22px]  rounded-md mt-7 text-white">
-                  <BsPlusSquare className="inline mx-1 mb-1" />
-                  {t("addt")}
-                </button>
-              </Link>
+      <div>
+        <div>
+          <div className="flex flex-col ">
+            <div
+              className={` mx-16 y9:mx-20 sm:mx-36 md:mx-44 lg:mx-60 xl:mx-56 mt-9 `}
+            >
+              <div>
+                <div className="flex dark:text-white">
+                  <h1 className="font-semibold text-[22px]">{t("today")} </h1>
+                  <div className="fa dark:text-darkTextPrimary text-slate-600 self-center mx-4">
+                    {i18n.language === "fa" ? (
+                      <span>
+                        {" "}
+                        {new Date().toLocaleDateString("fa", options)}{" "}
+                      </span>
+                    ) : (
+                      <span>
+                        {" "}
+                        {new Date().toLocaleDateString("en", options)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div>
+                  <div className="h-20">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setAddtodo(true);
+                      }}
+                      className={`${
+                        addTodo && "hidden"
+                      } bg-oragneMain px-4 py-2 hover:px-5 hover:py-3 hover:rounded-lg  duration-200 rounded-md mt-7 text-white`}
+                    >
+                      <BsPlusSquare className="inline mr-1 mb-1" />
+                      {t("addt")}
+                    </button>
+                  </div>
+                  <div>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        Addtodo();
+                      }}
+                      className={`${
+                        !addTodo && "hidden"
+                      } flex  flex-col max-w-[740px] rounded-md`}
+                    >
+                      <div className="  dark:bg-primaryColor h-[100px] border dark:border-0 rounded-md border-[#787f98]">
+                        <div>
+                          <input
+                            name="name"
+                            value={todo.name}
+                            onChange={changHandler}
+                            type="text"
+                            placeholder={t("tname")}
+                            className="w-full bg-transparent dark:bg-primaryColor mt-2 placeholder:text-[#787f98]
+                         outline-none px-4
+                        "
+                          />{" "}
+                        </div>
+                        <div>
+                          <input
+                            name="dis"
+                            value={todo.dis}
+                            onChange={changHandler}
+                            type="text"
+                            placeholder={t("dis")}
+                            className=" bg-transparent dark:bg-primaryColor mt-2 placeholder:text-[#787f98]
+                        px-4 outline-none w-full 
+                        "
+                          />{" "}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end mt-2">
+                        <div>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setAddtodo(false);
+                            }}
+                            className="mx-1 dark:text-darkTextPrimary text-sm"
+                          >
+                            {t("cancel")}
+                          </button>
+                        </div>
+                        <div className="h-9 w-20 ">
+                          <button
+                            disabled={
+                              todo.name === "" && todo.dis === "" && true
+                            }
+                            className={`mx-2 px-5 py-[1px] 
+                        ${todo.name === "" && "bg-slate-600 opacity-75"}
+                        ${todo.dis === "" && "bg-slate-600 opacity-75"}
+                         ${
+                           todo.name !== "" &&
+                           todo.dis !== "" &&
+                           " hover:px-6 hover:py-[3px] hover:rounded-md duration-300"
+                         }  rounded-sm bg-oragneMain text-white`}
+                          >
+                            {t("add")}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={` mx-12 y9:mx-20 sm:mx-28 md:mx-44 lg:mx-60 xl:mx-56 mt-1 `}
+            >
+              <div className={`${todos.length === 0 && "hidden"}`}>
+                <div className="flex justify-between mt-12 border-b max-w-[740px]">
+                  <div className="font-bold text-oragneMain text-[19px] ">
+                    {t("todoList")}
+                  </div>
+
+      
+                </div>
+              </div>
+
+              {todos.length !== 0 && (
+                <div>
+                  {todos.map((Todo) => (
+                    <div key={Todo.id}>
+                      {Todo.edit ? (
+                        <div className="py-4 border-b dark:border-[#787f98] mx-1  max-w-[740px]">
+                          <div className="border border-[#787f98] py-3 pl-4 rounded-md">
+                            <div className="flex justify-between ">
+                              <div className="flex">
+                                <div className="font-semibold border-b pb-2 dark:border-[#787f98] ">
+                                  <input
+                                    type="text"
+                                    name="name"
+                                    value={editTodo.name}
+                                    onChange={EditchangHandler}
+                                    className="bg-transparent outline-none"
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex self-center text-[18px] ">
+                                <div className="mx-1 text-red-500 hover:text-[20px] w-4 duration-200">
+                                  <FiTrash2
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      removeHandler(Todo.id);
+                                    }}
+                                    className="hover:text-[20px] text-[18px] cursor-pointer duration-200"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="mt-2">
+                              <textarea
+                                id=""
+                                rows="2"
+                                name="dis"
+                                value={editTodo.dis}
+                                onChange={EditchangHandler}
+                                className="w-full bg-transparent outline-none"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex justify-end mt-2 text-sm h-4">
+                            <div>
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  showEditHand(Todo.id);
+                                }}
+                              >
+                                {t("cancel")}{" "}
+                              </button>
+                            </div>
+
+                            <div className="mx-3 w-16">
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  showEditHand(Todo.id);
+                                  EditHandler();
+                                }}
+                                className="border border-oragneMain px-4 py-[1px] hover:px-5 hover:py-[2px] hover:rounded-md duration-300 rounded-sm text-oragneMain font-semibold "
+                              >
+                                {t("edit")}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          {toString(Todo.dataEn) ===
+                          toString(new Date().toLocaleDateString()) ? (
+                            <div className="py-4 border-b dark:border-[#787f98] mx-1  max-w-[740px]">
+                              <div className="flex justify-between ">
+                                <div className="flex">
+                                  <div
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      compeletHandler(Todo.id);
+                                    }}
+                                    className={`mx-2 hover:text-[18px] duration-200 self-center cursor-pointer ${
+                                      Todo.com && "text-gray-500"
+                                    }`}
+                                  >
+                                    {Todo.com ? (
+                                      <BsCheckCircle />
+                                    ) : (
+                                      <BsCircle />
+                                    )}
+                                  </div>
+                                  <div
+                                    className={`font-semibold ${
+                                      Todo.com && "text-gray-500  line-through"
+                                    }  cursor-pointer`}
+                                  >
+                                    {Todo.name}
+                                  </div>
+                                </div>
+                                <div className="flex self-center text-[18px] h-4 ">
+                                  <div className="text-slate-800 dark:text-darkTextPrimary hover:text-[20px] duration-200">
+                                    <FiEdit
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        showEditHand(Todo.id);
+                                        setEditTodo({
+                                          id: Todo.id,
+                                          name: Todo.name,
+                                          dis: Todo.dis,
+                                        });
+                                      }}
+                                      className="cursor-pointer"
+                                    />
+                                  </div>
+                                  <div className="mx-1 y9:mx-3 text-red-500 hover:text-[20px] w-4 duration-200">
+                                    <FiTrash2
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        removeHandler(Todo.id);
+                                      }}
+                                      className="hover:text-[20px] text-[18px] cursor-pointer duration-200"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className={`${Todo.com && "text-gray-500"}`}>
+                                {Todo.dis}
+                              </div>
+                            </div>
+                          ) : (
+                            <div>{t("notoday")} </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -477,7 +745,7 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
           }}
           className={
             showUser &&
-            `absolute z-10 bg-slate-50  w-full h-full  bg-opacity-5 duration-300 top-[73px]`
+            `absolute z-10 bg-slate-50 top-[73px] w-full h-full  bg-opacity-5 duration-300 top-[73px]`
           }
         ></div>
 
@@ -518,4 +786,5 @@ const TodoHome = ({ history, theme, setTheme, changeLanguage }) => {
   );
 };
 
-export default withRouter(TodoHome);
+export default withRouter(Today);
+// dark:border-[#787f98]
