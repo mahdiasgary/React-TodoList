@@ -16,9 +16,10 @@ The site is responsive and single page application .Also Formic , Yup and toasti
 
 
   </br>
+  </br>
   
-  
-[View Online ( Click Here )](https://todoman.netlify.app/)
+
+###[View Online ( Click Here )](https://todoman.netlify.app/)
 
 ---
 
